@@ -1,4 +1,4 @@
-// VERSÃO 1.2
+// VERSÃO 1.3
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@ int main()
 {
     setlocale(LC_ALL, "Portuguese");
     Logo();
-    Menu_Login();
+    //Menu_Login();
     Menu_Principal();
 
     return 0;
@@ -386,285 +386,6 @@ void Menu_Cadastros()
     }
 }
 
-/************************************************************************************************************************************/
-///  NOVAS FUNÇÕES DA VERSÃO 1.1
-/************************************************************************************************************************************/
-
-void Cadastro_Atleta_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Atleta_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Atleta();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Atleta_Finalizado();
-    }
-}
-
-///-----------------------------------------------
-
-void Imprime_Cadastro_Atleta_Finalizado()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                    Cadastro de Atleta Finalizado                |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais Atletas                                       |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Imprime_Cadastro_Modalidade_Olimpica_Finalizado()
-{
-    printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Modalidade Olímpica, Finalizado           |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais modalidades                                   |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Imprime_Cadastro_Localidade_Finalizado()
-{
-    printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Localidade, Finalizado                    |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais Localidade                                    |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Imprime_Cadastro_Agendamento_Treino_Finalizado()
-{
-    printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Agendamento, Finalizado                   |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais treino                                        |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Imprime_Cadastro_Agendamento_Jogo_Finalizado()
-{
-    printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Jogo, Finalizado                          |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais jogo                                          |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Imprime_Cadastro_Medico_Finalizado()
-{
-    printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Medico(s), Finalizado                       |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais médicos                                       |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Imprime_Cadastro_Funcionario_Finalizado()
-{
-    printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Funcionario(s), Finalizado                  |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais funcionario(s)                                |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Imprime_Cadastro_Voluntario_Finalizado()
-{
-    printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Voluntario(s), Finalizado                 |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais voluntario(s)                                 |\n"
-            "| 2- Voltar para tela de Cadastros                                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-/// -----------------------------------------------
-
-void Cadastro_Modalidade_Olimpica_Finalizado()
-{
-    int escolhaDoUsuario;
-    Imprime_Cadastro_Modalidade_Olimpica_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Modalidade();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Modalidade_Olimpica_Finalizado();
-    }
-}
-
-/// -----------------------------------------------
-
-void Cadastro_Localidade_Finalizado()
-{
-    int escolhaDoUsuario;
-    Imprime_Cadastro_Localidade_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Localidade();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Imprime_Cadastro_Localidade_Finalizado();
-    }
-}
-
-/// -----------------------------------------------
-
-void Cadastro_Agendamento_Treino_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Agendamento_Treino_Finalizado();
-
-     printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_AgendamentoTreino();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Agendamento_Treino_Finalizado();
-    }
-}
-
-/// -----------------------------------------------
-
-void Cadastro_Agendamento_Jogo_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Agendamento_Jogo_Finalizado();
-
-     printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_AgendamentoJogo();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Agendamento_Jogo_Finalizado();
-    }
-}
-
-/// -----------------------------------------------
-
-void Cadastro_Medico_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Medico_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Medico();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Medico_Finalizado();
-    }
-}
-
-/// -----------------------------------------------
-
-void Cadastro_Funcionario_Finalizado() {
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Funcionario_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Funcionario();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Funcionario_Finalizado();
-    }
-}
-
-/// -----------------------------------------------
-
-void Cadastro_Voluntario_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Voluntario_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Funcionario();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Funcionario_Finalizado();
-    }
-}
-
-/************************************************************************************************************************************/
-/************************************************************************************************************************************/
-
-
-
 void Cadastro_Atleta()
 {
     int quantidadeDeAtletas, idadeDoAtleta, count;
@@ -683,7 +404,6 @@ void Cadastro_Atleta()
 
     for (count = 0; count < quantidadeDeAtletas; count++)
     {
-        system("cls");
         printf("\n+-----------------------------------------------------------------+\n"
                  "|                     Cadastrando novo Atleta                     |\n"
                  "+-----------------------------------------------------------------+\n");
@@ -746,7 +466,7 @@ void Cadastro_Modalidade()
         fgets(alojamentoDaModalidade, 30, stdin);
     }
     system("pause");
-    Cadastro_Modalidade_Olimpica_Finalizado();
+    Cadastro_Modalidade_Finalizado();
 }
 
 
@@ -813,7 +533,7 @@ void Cadastro_AgendamentoTreino()
     }
 
     system("pause");
-    Cadastro_Agendamento_Treino_Finalizado();
+    Cadastro_AgendamentoTreino_Finalizado();
 }
 
 void Cadastro_AgendamentoJogo()
@@ -833,7 +553,7 @@ void Cadastro_AgendamentoJogo()
 
     for (count = 0; count < quantidadeDeAgendamento; count++) {
         printf("\n+-----------------------------------------------------------------+\n"
-                 "|                  Novo Cadastro de Jogo                          |\n"
+                 "|                      Novo Cadastro de Jogo                      |\n"
                  "+-----------------------------------------------------------------+\n");
 
         printf("\nQual modalidade olímpica vai jogar: ");
@@ -850,7 +570,7 @@ void Cadastro_AgendamentoJogo()
     }
 
     system("pause");
-    Cadastro_Agendamento_Jogo_Finalizado();
+    Cadastro_AgendamentoJogo_Finalizado();
 }
 
 void Cadastro_Medico()
@@ -952,7 +672,7 @@ void Cadastro_Voluntario()
                  "|                         Novo Voluntario                         |\n"
                  "+-----------------------------------------------------------------+\n");
 
-        printf("\nNome do funcionario: ");
+        printf("\nNome do voluntario: ");
         setbuf(stdin, NULL);
         fgets(nomeDoVoluntario, 30, stdin);
 
@@ -1091,6 +811,183 @@ void Verificar_Cadastro(char txt[100])
         Menu_Login();
 }
 
+/// CADASTRO FINALIZADO -------------------------------------------------------------------------------------------------------------|
+
+void Cadastro_Atleta_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Atleta_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Atleta();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Atleta_Finalizado();
+    }
+}
+
+void Cadastro_Modalidade_Finalizado()
+{
+    int escolhaDoUsuario;
+    Imprime_Cadastro_Modalidade_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Modalidade();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Modalidade_Finalizado();
+    }
+}
+
+void Cadastro_Localidade_Finalizado()
+{
+    int escolhaDoUsuario;
+    Imprime_Cadastro_Localidade_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Localidade();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Imprime_Cadastro_Localidade_Finalizado();
+    }
+}
+
+void Cadastro_AgendamentoTreino_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_AgendamentoTreino_Finalizado();
+
+     printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_AgendamentoTreino();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_AgendamentoTreino_Finalizado();
+    }
+}
+
+void Cadastro_AgendamentoJogo_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_AgendamentoJogo_Finalizado();
+
+     printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_AgendamentoJogo();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_AgendamentoJogo_Finalizado();
+    }
+}
+
+void Cadastro_Medico_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Medico_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Medico();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Medico_Finalizado();
+    }
+}
+
+void Cadastro_Funcionario_Finalizado() {
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Funcionario_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Funcionario();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Funcionario_Finalizado();
+    }
+}
+
+void Cadastro_Voluntario_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Voluntario_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Funcionario();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Funcionario_Finalizado();
+    }
+}
+
+/// IMPRESSÃO -----------------------------------------------------------------------------------------------------------------------|
+
 void Imprime_Menu_Principal()
 {
     system("cls");
@@ -1153,3 +1050,92 @@ void Imprime_Login_Cadastro()
             "|                           Novo Usuário                          |\n"
             "+-----------------------------------------------------------------+\n");
 }
+
+void Imprime_Cadastro_Atleta_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                    Cadastro de Atleta Finalizado                |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais Atletas                                       |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Cadastro_Modalidade_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|           Cadastro de Modalidade Olímpica, Finalizado           |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais modalidades                                   |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Cadastro_Localidade_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|           Cadastro de Localidade, Finalizado                    |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais Localidade                                    |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Cadastro_AgendamentoTreino_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|           Cadastro de Agendamento, Finalizado                   |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais treino                                        |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Cadastro_AgendamentoJogo_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|           Cadastro de Jogo, Finalizado                          |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais jogo                                          |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Cadastro_Medico_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|           Cadastro de Medico(s), Finalizado                       |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais médicos                                       |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Cadastro_Funcionario_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|           Cadastro de Funcionario(s), Finalizado                  |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais funcionario(s)                                |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Cadastro_Voluntario_Finalizado()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|           Cadastro de Voluntario(s), Finalizado                 |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Cadastrar mais voluntario(s)                                 |\n"
+            "| 2- Voltar para tela de Cadastros                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
