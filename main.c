@@ -1,27 +1,33 @@
-// VERSÃO 0.3
+/// VERSÃO 1.0
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
 
+int cod_AtualUsuario, cod_UltimoUsuario, num_cadastros;
+
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// FUNÇÃO PRINCIPAL                                                                                                                 /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
 
     Logo();
-    Entrada();
-    MenuPrincipal();
+    Menu_Login();
+    Menu_Principal();
 
     return 0;
 }
 
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// TELA DE INICIALIZAÇÃO                                                                                                            /
+///----------------------------------------------------------------------------------------------------------------------------------/
+
 void Logo()
-{
-    /********************************************************************/
-    /// Imprime uma logo das olimpiadas com as informações do trabalho ///
-    /********************************************************************/
+{// Função para a impressão de uma imagem com as informações do trabalho
 
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
@@ -54,73 +60,57 @@ void Logo()
     system("pause");
 }
 
-///---------------------------------------------------------------------------------------------------/
-/// TELA DE LOGIN
-///
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// TELAS DE LOGIN                                                                                                                   /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
-void Entrada()
-{
-    /*********************************************************/
-    /// Menu para seleção de Login ou de Cadastro de usuário */
-    /*********************************************************/
+void Menu_Login()
+{// Função para a impressão e seleção do menu de login.
 
-    /// Declaração de Variaveis
+    /// DECLARAÇÃO DE VARIAVEIS
     int opcao;
 
-    /// Impressão do Menu
+    /// IMPRESSÃO DO MENU
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
             "|                              Login                              |\n"
             "+-----------------------------------------------------------------+\n"
             "| 1- Entrar                                                       |\n"
             "| 2- Novo Usuário                                                 |\n"
+            "| 3- Sair                                                         |\n"
             "+-----------------------------------------------------------------+\n\n");
 
     printf("--> ");
     setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
-    /// Filtar seleção
+    /// FILTRAR SELEÇÃO
     switch(opcao)
     {
         case 1:
-            UsuarioLogin();
+            Login_Entrar();
             break;
         case 2:
-            UsuarioCadastro();
+            Login_Cadastrar();
             break;
+        case 3:
+            exit(0);
         default:
-            Entrada();
+            Menu_Login();
     }
 }
 
-void UsuarioLogin()
-{
-    /***********************************/
-    /// Login de um usuário existente ///
-    /***********************************/
+void Login_Entrar()
+{// Função utilizada na realização de login do usuário.
 
-    /// Declaração de Variaveis
-    FILE *arquivo;
-    char *resultado, *pedaco;
-    char verificacao, usuario[30], senha[30], dados1[100], dados2[100], matriz[2][50];
-    int i, acesso = 0;
+    /// DECLARAÇÃO DE VARIAVEIS
+    char verificacao, usuario[30], senha[30];
+    int acesso = 0;
 
-    /// Impressão do Menu
-    ImprimeMenuLogin();
+    /// IMPRESSÃO DO MENU
+    Imprime_Login_Entrar();
 
-    /// Abertura do Arquivo de Usuários
-    arquivo = fopen("usuarios.txt", "r");
-
-    /// Verifica a Abertura do Arquivo
-    if(arquivo == NULL)
-    {
-        printf(" Erro na abertura do arquivo!\n");
-        system("pause");
-        Entrada();
-    }
-
-    /// Entrada dos Dados
+    /// ENTRADA DE DADOS
     printf(" Login: ");
     setbuf(stdin, NULL);
     scanf("%s", usuario);
@@ -129,227 +119,488 @@ void UsuarioLogin()
     setbuf(stdin, NULL);
     scanf("%s", senha);
 
-    // Pergunta se os dados estão corretos
-    printf("\nDados corretos? \n[S,N]--> ");
-    setbuf(stdin, NULL);
-    scanf("%c", &verificacao);
+    /// CHECAGEM DOS DADOS
+    acesso = Buscar_Usuario(3, usuario, senha);
 
-    // Verifica caso os dados estejam corretos
-    if((verificacao == 's')||(verificacao == 'S'))
+    if(acesso == 1)
+        Menu_Principal();
+    else
     {
-        // Percorre cada linha do arquivo
-        while(!feof(arquivo))
-        {
-            // Retorna a linha para a variavel "dados"
-            resultado = fgets(dados1, 100, arquivo);
+        Imprime_Login_Entrar();
 
-            // Copia os valores do primeiro vetor para o segundo vetor
-            for(int a = 0; a < 100; a++)
-            {
-                dados2[a] = dados1[a];
-            }
-
-            // Verifica se foi possivel retornar alguma string da linha
-            i = 0;
-            if(resultado)
-            {
-                // Reparte a varivel "dados" a cada caractere "§" e envia para o ponteiro "pedaco"
-                pedaco = strtok(dados2, "§");
-
-                // Percorre por cada repartição em "pedaco"
-                while(pedaco)
-                {
-                    // Atribui a "matriz" cada valor de "padaco" separadamente
-                    strcpy(matriz[i],pedaco);
-                    pedaco = strtok(NULL, "§");
-                    i++;
-                }
-            }
-            // Verifica se os dados digitados batem com os do sistema, se sim retorna 1
-            if((!strcmp(matriz[0], usuario))&(!strcmp(matriz[1], senha)))
-                acesso = 1;
-        }
-
-        /// Fechamento do Arquivo de Usuários
-        fclose(arquivo);
-
-        /// Verificação dos Dados
-        if(acesso == 0)
-        {
-            ImprimeMenuLogin();
-            printf(" Usuário ou Senha incorretos!\n\nCadastrar novo usuário? \n[S,N]--> ");
-            setbuf(stdin, NULL);
-            scanf("%c", &verificacao);
-
-            if((verificacao == 's')||(verificacao == 'S'))
-            {
-                UsuarioCadastro();
-            }else
-            {
-                UsuarioLogin();
-            }
-        }else
-        {
-            MenuPrincipal();
-        }
-    }else
-    {
-        UsuarioLogin();
+        if(Msg_Pergunta("Usuário ou Senha Incorretos!\n\nDeseja realizar o cadastro de um novo usuário?") == 1)
+            Login_Cadastrar();
+        else
+            Login_Entrar();
     }
 }
 
-void UsuarioCadastro()
-{
-    /*********************************/
-    /// Cadastro de um novo usuário ///
-    /*********************************/
+void Login_Cadastrar()
+{// Função utilizada no cadastro de um novo usuário.
 
-    /// Declaração de Variaveis
-    FILE *arquivo;
-    char usuario[50], senha[30];
+    /// DECLARAÇÃO DE VARIAVEIS
+    char usuario[50], senha1[30], senha2[30];
     char verificacao;
+    int comparacao, tamUsuario, tamSenha;
 
-    /// Impressão do Menu
-    ImprimeMenuCadastro();
+    /// IMPRESSÃO DO MENU
+    Imprime_Login_Cadastro();
 
-    /// Abertura do Arquivo de Usuários
-    arquivo = fopen("usuarios.txt", "a");
-
-    /// Verifica a Abertura do Arquivo
-    if(arquivo == NULL)
-    {
-        printf(" Erro na abertura do arquivo!\n");
-        system("pause");
-        Entrada();
-    }
-
-    /// Entrada dos Dados
+    /// ENTRADA DE DADOS
     printf(" Usuário: ");
     setbuf(stdin, NULL);
     scanf("%s", usuario);
 
-    printf(" Senha: ");
+    printf("\n Senha: ");
     setbuf(stdin, NULL);
-    scanf("%s", senha);
+    scanf("%s", senha1);
 
-    // Verifica se o usuário digitou os dados corretamente
-    ImprimeMenuCadastro();
-    printf("Dados Corretos? \n"
-           " Login: [%s]    \n"
-           " Senha: [%s]  \n\n", usuario, senha);
-
-    printf("[S,N]--> ");
+    printf(" Confirme a Senha: ");
     setbuf(stdin, NULL);
-    scanf("%c", &verificacao);
+    scanf("%s", senha2);
 
-    // Verifica caso os dados estejam corretos
-    if((verificacao == 's')|(verificacao == 'S'))
+    /// COMPARAÇÃO DOS DADOS
+    comparacao = strcmp(senha1, senha2);
+    tamSenha = strlen(senha1);
+    tamUsuario = strlen(usuario);
+
+    if(comparacao != 0) Verificar_Cadastro("As senhas não correspondem!");
+    else if(tamSenha < 8) Verificar_Cadastro("Senha muito curta!");
+    else if(tamSenha > 29) Verificar_Cadastro("Senha muito longa!");
+    else if(tamUsuario > 49) Verificar_Cadastro("Usuário muito longo!");
+    else
     {
-        ImprimeMenuCadastro();
+        Imprime_Login_Cadastro();
+        Adicionar_Usuario(usuario, senha1);
+        Menu_Login();
+    }
+}
 
-        /// Escreve no Arquivo TXT e separado por "§"
-        fprintf(arquivo, "\n%s§%s§", usuario, senha);
-        printf(" Usuário cadastrado com sucesso!\n");
+int Buscar_Usuario(int modo, char usuario[50], char senha[30])
+{// Função para buscar o usuario informado no arquivo de texto.
+    // Modo 1 - Retorna se o usuário está ou não cadastrado.
+    // Modo 2 - Retorna se o usuário e senha estão cadastrados e se correspondem.
+    // Modo 3 - Retorna se o usuário e senha estão cadastrados, se correspondem e informa seu código.
+
+    /// DECLARAÇÃO DE VARIAVEIS
+    FILE *arquivo;
+    char verificacao, dados1[50], dados2[50], info[3][50], *resultado, *pedacos;
+    int index, acesso = 0;
+
+    /// ABERTURA DO ARQUIVO
+    arquivo = fopen("usuarios.txt", "a+");
+
+    /// VERIFICAÇÃO DA ABERTURA DO ARQUIVO
+    if(arquivo == NULL)
+    {
+        printf("Não foi possivel encontrar o arquivo de usuários!\n\n");
         system("pause");
-
-    }else
-    {
-        ImprimeMenuCadastro();
-
-        printf("Deseja retornar para a tela de login? \n[S,N]--> ");
-        setbuf(stdin, NULL);
-        scanf("%c", &verificacao);
-
-        if((verificacao == 's')|(verificacao == 'S'))
-        {
-            Entrada();
-        }else
-        {
-            UsuarioCadastro();
-        }
+        Menu_Login();
     }
 
-    /// Fechamento do Arquivo de Usuários
+    /// PERCORRER CADA LINHA DO ARQUIVO
+    while(!feof(arquivo))
+    {
+        // Retornar a string da linha atual
+        resultado = fgets(dados1, 100, arquivo);
+
+        // Copiar o valor de um vetor para o outro
+        strcpy(dados2, dados1);
+
+        /// VERIFICAR SE A LINHA RETORNOU ALGO
+        index = 0;
+        if(resultado)
+        {
+            /// REPARTIR O RESULTADO DA LINHA
+            pedacos = strtok(dados2, "§");
+
+            /// PERCORRER CADA REPARTIÇÃO
+            while(pedacos)
+            {
+                // Atribui o valor da repartição atual para o vetor
+                strcpy(info[index], pedacos);
+                cod_UltimoUsuario = atoi(pedacos);
+                pedacos = strtok(NULL, "§");
+
+                index++;
+            }
+        }else
+            cod_UltimoUsuario = 0;
+
+        /// VERIFICAR E RETORNAR OS DADOS COM BASE NO MODO INFORMADO
+        if(modo == 1){
+            if(!strcmp(usuario, info[0])) acesso = 1;
+        }
+        if(modo == 2){
+            if((!strcmp(info[0], usuario))&(!strcmp(info[1], senha)))
+                acesso = 1;
+        }
+        if(modo == 3){
+            if((!strcmp(usuario, info[0]))&&(!strcmp(senha, info[1]))){
+                acesso = 1;
+                cod_AtualUsuario = atoi(info[2]);
+            }
+        }
+    }
+    /// FECHAMENTO DO ARQUIVO
     fclose(arquivo);
-    Entrada();
+
+    /// RETORNA SE ENCONTROU OU NÃO O USUARIO
+    // 0 - Não encontrado
+    // 1 - Encotrado
+    return acesso;
 }
 
-void ImprimeMenuLogin()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                              Entrar                             |\n"
-            "+-----------------------------------------------------------------+\n");
+int Adicionar_Usuario(char usuario[50], char senha[30])
+{// Função para adicionar um novo usuário ao arquivo de texto.
+
+    /// DECLARAÇÃO DE VARIAVEIS
+    FILE *arquivo;
+    char verificacao;
+    int acesso;
+
+    /// VERIFICAR SE USUÁRIO JA EXISTE
+    acesso = Buscar_Usuario(1, usuario, senha);
+    if(acesso == 1)
+    {
+        if(Msg_Pergunta("Usuário ja existente!\n\nDeseja realizar o cadastro novamente?") == 1)
+            Login_Cadastrar();
+        else
+            Menu_Login();
+    }else
+    {
+        /// ABERTURA DO ARQUIVO
+        arquivo = fopen("usuarios.txt", "a+");
+
+        /// VERIFICAÇÃO DA ABERTURA DO ARQUIVO
+        if(arquivo == NULL)
+        {
+            printf("Não foi possivel encontrar o arquivo de usuários!\n");
+            system("pause");
+            Menu_Login();
+        }
+
+        /// ESCREVER NO ARQUIVO TEXTO COM SEPARAÇÃO POR '§'
+        fprintf(arquivo, "\n%s§%s§%d§", usuario, senha, (cod_UltimoUsuario + 1));
+        printf("Usuário cadastrado com sucesso!\n\n");
+        system("pause");
+
+        /// FECHAMENTO DO ARQUIVO
+        fclose(arquivo);
+    }
+    return 0;
 }
 
-void ImprimeMenuCadastro()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                           Novo Usuário                          |\n"
-            "+-----------------------------------------------------------------+\n");
-}
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// TELA DE MENU PRINCIPAL                                                                                                           /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
-///---------------------------------------------------------------------------------------------------/
-/// TELA DE MENU
-///
+void Menu_Principal()
+{// Função para a impressão e seleção do menu principal.
 
-void MenuPrincipal()
-{
-    /*******************************/
-    /// Menu de seleção principal ///
-    /*******************************/
-
-    /// Declaração de Variaveis
+    /// DECLARAÇÃO DE VARIAVEIS
     int opcao;
+    char verificacao;
 
-    /// Impressão do Menu
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                          Menu Principal                         |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Tela de Cadastros                                            |\n"
-            "| 2- Tela de Gerenciamentos                                       |\n"
-            "| 3- Tela de Login                                                |\n"
-            "| 4- Sair                                                         |\n"
-            "+-----------------------------------------------------------------+\n\n");
+    /// IMPRESSÃO DO MENU
+    Imprime_Menu_Principal();
 
     printf("--> ");
     setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
-    /// Filtar Seleção
+    /// FILTRAR SELEÇÃO
     switch(opcao)
     {
         case 1:
-            MenuCadastros();
+            Menu_Cadastros();
             break;
         case 2:
-            MenuGerenciamentos();
+            Menu_Gerenciamentos();
             break;
         case 3:
-            Entrada();
+            if(Msg_Pergunta("\nDeseja deslogar do usuário atual?") == 1) Menu_Login();
+            else Menu_Principal();
+            break;
         case 4:
-            exit(0);
+            if(Msg_Pergunta("\nDeseja sair do programa?") == 1) exit(0);
+            else Menu_Principal();
+            break;
         default:
-            MenuPrincipal();
+            Menu_Principal();
     }
 }
 
-///---------------------------------------------------------------------------------------------------/
-/// AREA DE CADASTROS
-///
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// AREA DE CADASTROS                                                                                                                /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
-void MenuCadastros()
-{
-    /*********************************************************/
-    /// Menu de seleção para cadastrar uma determinada area ///
-    /*********************************************************/
+void Menu_Cadastros()
+{// Função para a impressão e seleção do menu de cadastros.
 
-    /// Declaração de Variaveis
+    /// DECLARAÇÃO DE VARIAVEIS
     int opcao;
 
-    /// Impressão do Menu
+    /// IMPRESSÃO DO MENU
+    Imprime_Menu_Cadastro();
+
+    printf("--> ");
+    setbuf(stdin, NULL);
+    scanf("%d", &opcao);
+
+    /// FILTRAR SELEÇÃO
+    switch(opcao)
+    {
+        case 1:
+            Cadastro_Atleta();
+            break;
+        case 2:
+            Cadastro_Localidade();
+            break;
+        case 3:
+            Cadastro_Equipamento();
+            break;
+        case 4:
+            Cadastro_Agendamento();
+            break;
+        case 5:
+            Cadastro_Medico();
+            break;
+        case 6:
+            Cadastro_Funcionario();
+            break;
+        case 7:
+            Cadastro_Voluntario();
+            break;
+        case 8:
+            Cadastro_Protocolo();
+            break;
+        case 9:
+            Menu_Principal();
+            break;
+        case 10:
+            if(Msg_Pergunta("\nDeseja sair do programa?") == 1) exit(0);
+            else Menu_Cadastros();
+            break;
+        default:
+            Menu_Cadastros();
+    }
+}
+
+void Cadastro_Atleta()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                         Cadastrar Atleta                        |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    setbuf(stdin, NULL);
+    Menu_Principal();
+}
+void Cadastro_Localidade()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Cadastrar Localidade                      |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Cadastro_Equipamento()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Cadastrar Equipamento                     |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Cadastro_Agendamento()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Cadastrar Agendamento                     |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+}
+void Cadastro_Medico()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                         Cadastrar Médico                        |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Cadastro_Funcionario()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Cadastrar Funcionário                     |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Cadastro_Voluntario()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Cadastrar Voluntário                      |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Cadastro_Protocolo()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                        Cadastrar Protocolo                      |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// AREA DE GERENCIAMENTO                                                                                                            /
+///----------------------------------------------------------------------------------------------------------------------------------/
+
+void Menu_Gerenciamentos()
+{// Função para a impressão e seleção do menu de gerenciamentos.
+
+    /// DECLARAÇÃO DE VARIAVEIS
+    int opcao;
+
+    /// IMPRESSÃO DO MENU
+    Imprime_Menu_Gerenciamento();
+
+    printf("--> ");
+    setbuf(stdin, NULL);
+    scanf("%d", &opcao);
+
+    /// FILTRAR SELESSÃO
+    switch(opcao)
+    {
+        case 1:
+            Gerencia_Calendario();
+            break;
+        case 2:
+            Gerencia_Ranqueamento();
+            break;
+        case 3:
+            Gerencia_Medalhistas();
+            break;
+        case 4:
+            Gerencia_Contabilizacao();
+            break;
+        case 5:
+            Menu_Principal();
+            break;
+        case 6:
+            if(Msg_Pergunta("\nDeseja sair do programa?") == 1) exit(0);
+            else Menu_Gerenciamentos();
+            break;
+        default:
+            Menu_Gerenciamentos();
+    }
+}
+
+void Gerencia_Calendario()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                        Calendario Olímpico                      |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Gerencia_Ranqueamento()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                      Ranqueamento de Medalhas                   |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Gerencia_Medalhistas()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                      Medalhistas Olímpicos                      |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Gerencia_Contabilizacao()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                    Contabilização de Medalhas                   |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// FUNÇÕES GENERICAS                                                                                                                /
+///----------------------------------------------------------------------------------------------------------------------------------/
+
+int Msg_Pergunta(char txt[200])
+{
+    /// DECLARAÇÃO DE VARIAVEIS
+    char pergunta;
+
+    /// IMPRESSÃO DA MENSAGEM
+    printf("%s\n[S,N]--> ", txt);
+    setbuf(stdin, NULL);
+    scanf("%c", &pergunta);
+
+    /// RETORNO DA RESPOSTA
+    if((pergunta == 's')|(pergunta == 'S')) return 1;
+    else return 0;
+}
+
+void Verificar_Cadastro(char txt[100])
+{
+    /// DECLARAÇÃO DE VARIAVEIS
+    char verificacao;
+
+    /// IMPRESSÃO DA MENSAGEM
+    Imprime_Login_Cadastro();
+
+    if(Msg_Pergunta(("%s\n\nDeseja cadastrar novamente?", txt)) == 1)
+        Login_Cadastrar();
+    else
+        Menu_Login();
+}
+
+void Imprime_Menu_Principal()
+{
+    system("cls");
+    printf( "+--------------+--------------------------------------------------+\n"
+            "| Usuário: %.3d |           Menu Principal                         |\n"
+            "+--------------+--------------------------------------------------+\n"
+            "| 1- Tela de Cadastros                                            |\n"
+            "| 2- Tela de Gerenciamentos                                       |\n"
+            "| 3- Tela de Login                                                |\n"
+            "| 4- Sair                                                         |\n"
+            "+-----------------------------------------------------------------+\n\n", cod_AtualUsuario);
+}
+
+void Imprime_Menu_Cadastro()
+{
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
             "|                        Menu de Cadastros                        |\n"
@@ -365,143 +616,10 @@ void MenuCadastros()
             "| 9- Voltar                                                       |\n"
             "|10- Sair                                                         |\n"
             "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    setbuf(stdin, NULL);
-    scanf("%d", &opcao);
-
-    /// Filtrar Seleção
-    switch(opcao)
-    {
-        case 1:
-            CadastrarAtleta();
-            break;
-        case 2:
-            CadastrarLocalidade();
-            break;
-        case 3:
-            CadastrarEquipamento();
-            break;
-        case 4:
-            CadastrarAgendamento();
-            break;
-        case 5:
-            CadastrarMedico();
-            break;
-        case 6:
-            CadastrarFuncionario();
-            break;
-        case 7:
-            CadastrarVoluntario();
-            break;
-        case 8:
-            CadastrarProtocolo();
-            break;
-        case 9:
-            MenuPrincipal();
-            break;
-        case 10:
-            exit(0);
-        default:
-            MenuCadastros();
-    }
 }
 
-void CadastrarAtleta()
+void Imprime_Menu_Gerenciamento()
 {
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                         Cadastrar Atleta                        |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    setbuf(stdin, NULL);
-    MenuPrincipal();
-}
-void CadastrarLocalidade()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Localidade                      |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-void CadastrarEquipamento()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Equipamento                     |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-void CadastrarAgendamento()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Agendamento                     |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-}
-void CadastrarMedico()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                         Cadastrar Médico                        |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-void CadastrarFuncionario()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Funcionário                     |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-void CadastrarVoluntario()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Voluntário                      |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-void CadastrarProtocolo()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                        Cadastrar Protocolo                      |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-
-///
-/// AREA DE GERENCIAMENTO
-///
-
-void MenuGerenciamentos()
-{
-    /****************************************************************/
-    /// Menu de seleção para o gerenciamento de uma determida area ///
-    /****************************************************************/
-
-    /// Declaração de Variaveis
-    int opcao;
-
-    /// Impressão do Menu
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
             "|                      Menu de Gerenciamentos                     |\n"
@@ -513,73 +631,20 @@ void MenuGerenciamentos()
             "| 5- Voltar                                                       |\n"
             "| 6- Sair                                                         |\n"
             "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    setbuf(stdin, NULL);
-    scanf("%d", &opcao);
-
-    /// Filtar Seleção
-    switch(opcao)
-    {
-        case 1:
-            GerenciarCalendario();
-            break;
-        case 2:
-            GerenciarRanqueamento();
-            break;
-        case 3:
-            GerenciarMedalhistas();
-            break;
-        case 4:
-            GerenciarContabilizacao();
-            break;
-        case 5:
-            MenuPrincipal();
-            break;
-        case 6:
-            exit(0);
-        default:
-            MenuGerenciamentos();
-    }
 }
 
-void GerenciarCalendario()
+void Imprime_Login_Entrar()
 {
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
-            "|                        Calendario Olímpico                      |\n"
+            "|                              Entrar                             |\n"
             "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
 }
-void GerenciarRanqueamento()
+
+void Imprime_Login_Cadastro()
 {
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
-            "|                      Ranqueamento de Medalhas                   |\n"
+            "|                           Novo Usuário                          |\n"
             "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-void GerenciarMedalhistas()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                      Medalhistas Olímpicos                      |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
-}
-void GerenciarContabilizacao()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                    Contabilização de Medalhas                   |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    MenuPrincipal();
 }
