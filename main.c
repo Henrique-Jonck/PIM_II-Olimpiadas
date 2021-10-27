@@ -1,9 +1,8 @@
-// VERSÃO 0.2
+// VERSÃO 0.3
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
-#include <conio.h>
 #include <string.h>
 
 
@@ -25,26 +24,32 @@ void Logo()
     /********************************************************************/
 
     system("cls");
-    printf( "             Gerenciador das Olimpíadas de Paris 2024              \n"
-            "                Projeto PIM II - 'Nome do projeto'                 \n"
-            "                     UNIP Paulista - 00/00/2021                  \n\n"
-            "            .,::OOO::,.     .,ooOOOoo,.     .,::OOO::,.            \n"
-            "          .:'         `:. .8'         `8. .:'         `:.          \n"
-            "          :\"           \": 8\"           \"8 :\"           \":    \n"
-            "          :,        .,:::\"\"::,.     .,:o8OO::,.        ,:        \n"
-            "           :,,    .:' ,:   8oo`:. .:'oo8   :,,`:.    ,,:           \n"
-            "            `^OOoo:\"O^'     `^88oo:\"8^'     `^O\":ooOO^'         \n"
-            "                  :,           ,: :,           ,:                  \n"
-            "                   :,,       ,,:   :,,       ,,:                   \n"
-            "                    `^Oo,,,oO^'     `^OOoooOO^'                  \n\n");
-
-    printf( "                            Integrantes                            \n"
-            "             Fabio Stein Miranda de Oliveira - G243447             \n"
-            "                  Felipe Porto Rodrigues - N698381                 \n"
-            "           Guilherme Augusto dos Santos Ribeiro - G247850          \n"
-            "                  Henrique Campos Jonck - G298AB3                  \n"
-            "             Petra Eduarda de Jesus Furlanis - G27EHB1             \n"
-            "                 Vinícius Riqueza Moeller - G27BAH0            \n\n\n");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|             Gerenciador das Olimpíadas de Paris 2024            |\n"
+            "|                Projeto PIM II - 'Nome do projeto'               |\n"
+            "|                    UNIP Paulista - 00/00/2021                   |\n"
+            "+-----------------------------------------------------------------+\n"
+            "|                                                                 |\n"
+            "|           .,::OOO::,.     .,ooOOOoo,.     .,::OOO::,.           |\n"
+            "|         .:'         `:. .8'         `8. .:'         `:.         |\n"
+            "|         :\"           \": 8\"           \"8 :\"           \":         |\n"
+            "|         :,        .,:::\"\"::,.     .,:o8OO::,.        ,:         |\n"
+            "|          :,,    .:' ,:   8oo`:. .:'oo8   :,,`:.    ,,:          |\n"
+            "|           `^OOoo:\"O^'     `^88oo:\"8^'     `^O\":ooOO^'           |\n"
+            "|                 :,           ,: :,           ,:                 |\n"
+            "|                  :,,       ,,:   :,,       ,,:                  |\n"
+            "|                   `^Oo,,,oO^'     `^OOoooOO^'                   |\n"
+            "|                                                                 |\n"
+            "|                                                                 |\n"
+            "|-------------------------- Integrantes --------------------------|\n"
+            "|                                                                 |\n"
+            "|            Fabio Stein Miranda de Oliveira - G243447            |\n"
+            "|                 Felipe Porto Rodrigues - N698381                |\n"
+            "|          Guilherme Augusto dos Santos Ribeiro - G247850         |\n"
+            "|                 Henrique Campos Jonck - G298AB3                 |\n"
+            "|            Petra Eduarda de Jesus Furlanis - G27EHB1            |\n"
+            "|                Vinícius Riqueza Moeller - G27BAH0               |\n"
+            "+-----------------------------------------------------------------+\n\n");
 
     system("pause");
 }
@@ -65,12 +70,14 @@ void Entrada()
     /// Impressão do Menu
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
-            "|                          Tela de Login                          |\n"
+            "|                              Login                              |\n"
             "+-----------------------------------------------------------------+\n"
-            " 1- Login                                                          \n"
-            " 2- Cadastrar                                                    \n\n");
+            "| 1- Entrar                                                       |\n"
+            "| 2- Novo Usuário                                                 |\n"
+            "+-----------------------------------------------------------------+\n\n");
 
     printf("--> ");
+    setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
     /// Filtar seleção
@@ -109,14 +116,17 @@ void UsuarioLogin()
     if(arquivo == NULL)
     {
         printf(" Erro na abertura do arquivo!\n");
-        getch();
+        system("pause");
         Entrada();
     }
 
     /// Entrada dos Dados
     printf(" Login: ");
+    setbuf(stdin, NULL);
     scanf("%s", usuario);
+
     printf(" Senha: ");
+    setbuf(stdin, NULL);
     scanf("%s", senha);
 
     // Pergunta se os dados estão corretos
@@ -209,16 +219,18 @@ void UsuarioCadastro()
     if(arquivo == NULL)
     {
         printf(" Erro na abertura do arquivo!\n");
-        getch();
+        system("pause");
         Entrada();
     }
 
     /// Entrada dos Dados
     printf(" Usuário: ");
-    scanf("%s", usuario);
-    printf(" Senha: ");
-    scanf("%s", senha);
     setbuf(stdin, NULL);
+    scanf("%s", usuario);
+
+    printf(" Senha: ");
+    setbuf(stdin, NULL);
+    scanf("%s", senha);
 
     // Verifica se o usuário digitou os dados corretamente
     ImprimeMenuCadastro();
@@ -233,13 +245,17 @@ void UsuarioCadastro()
     // Verifica caso os dados estejam corretos
     if((verificacao == 's')|(verificacao == 'S'))
     {
+        ImprimeMenuCadastro();
+
         /// Escreve no Arquivo TXT e separado por "§"
         fprintf(arquivo, "\n%s§%s§", usuario, senha);
-        ImprimeMenuCadastro();
-        printf(" Usuário cadastrado com sucesso!");
+        printf(" Usuário cadastrado com sucesso!\n");
+        system("pause");
+
     }else
     {
         ImprimeMenuCadastro();
+
         printf("Deseja retornar para a tela de login? \n[S,N]--> ");
         setbuf(stdin, NULL);
         scanf("%c", &verificacao);
@@ -255,8 +271,6 @@ void UsuarioCadastro()
 
     /// Fechamento do Arquivo de Usuários
     fclose(arquivo);
-
-    getch();
     Entrada();
 }
 
@@ -264,7 +278,7 @@ void ImprimeMenuLogin()
 {
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
-            "|                              Login                              |\n"
+            "|                              Entrar                             |\n"
             "+-----------------------------------------------------------------+\n");
 }
 
@@ -272,7 +286,7 @@ void ImprimeMenuCadastro()
 {
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
-            "|                             Cadastro                            |\n"
+            "|                           Novo Usuário                          |\n"
             "+-----------------------------------------------------------------+\n");
 }
 
@@ -294,12 +308,14 @@ void MenuPrincipal()
     printf( "+-----------------------------------------------------------------+\n"
             "|                          Menu Principal                         |\n"
             "+-----------------------------------------------------------------+\n"
-            " 1- Tela de Cadastros                                              \n"
-            " 2- Tela de Gerenciamentos                                         \n"
-            " 3- Tela de Login                                                  \n"
-            " 4- Sair                                                         \n\n");
+            "| 1- Tela de Cadastros                                            |\n"
+            "| 2- Tela de Gerenciamentos                                       |\n"
+            "| 3- Tela de Login                                                |\n"
+            "| 4- Sair                                                         |\n"
+            "+-----------------------------------------------------------------+\n\n");
 
     printf("--> ");
+    setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
     /// Filtar Seleção
@@ -338,18 +354,20 @@ void MenuCadastros()
     printf( "+-----------------------------------------------------------------+\n"
             "|                        Menu de Cadastros                        |\n"
             "+-----------------------------------------------------------------+\n"
-            " 1- Atleta                                                         \n"
-            " 2- Localidade                                                     \n"
-            " 3- Equipamento                                                    \n"
-            " 4- Agendamento                                                    \n"
-            " 5- Médico                                                         \n"
-            " 6- Funcionário                                                    \n"
-            " 7- Voluntário                                                     \n"
-            " 8- Protocolo de contingência ao Covid-19                          \n"
-            " 9- Voltar                                                         \n"
-            "10- Sair                                                         \n\n");
+            "| 1- Atleta                                                       |\n"
+            "| 2- Localidade                                                   |\n"
+            "| 3- Equipamento                                                  |\n"
+            "| 4- Agendamento                                                  |\n"
+            "| 5- Médico                                                       |\n"
+            "| 6- Funcionário                                                  |\n"
+            "| 7- Voluntário                                                   |\n"
+            "| 8- Protocolo de contingência ao Covid-19                        |\n"
+            "| 9- Voltar                                                       |\n"
+            "|10- Sair                                                         |\n"
+            "+-----------------------------------------------------------------+\n\n");
 
     printf("--> ");
+    setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
     /// Filtrar Seleção
@@ -397,6 +415,7 @@ void CadastrarAtleta()
             "+-----------------------------------------------------------------+\n");
 
     system("pause");
+    setbuf(stdin, NULL);
     MenuPrincipal();
 }
 void CadastrarLocalidade()
@@ -487,14 +506,16 @@ void MenuGerenciamentos()
     printf( "+-----------------------------------------------------------------+\n"
             "|                      Menu de Gerenciamentos                     |\n"
             "+-----------------------------------------------------------------+\n"
-            " 1- Calendario Olímpico                                            \n"
-            " 2- Ranqueamento de Medalhas                                       \n"
-            " 3- Medalhistas Olímpicos                                          \n"
-            " 4- Contabilização de Medalhas Distribuidas                        \n"
-            " 5- Voltar                                                         \n"
-            " 6- Sair                                                         \n\n");
+            "| 1- Calendario Olímpico                                          |\n"
+            "| 2- Ranqueamento de Medalhas                                     |\n"
+            "| 3- Medalhistas Olímpicos                                        |\n"
+            "| 4- Contabilização de Medalhas Distribuidas                      |\n"
+            "| 5- Voltar                                                       |\n"
+            "| 6- Sair                                                         |\n"
+            "+-----------------------------------------------------------------+\n\n");
 
     printf("--> ");
+    setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
     /// Filtar Seleção
