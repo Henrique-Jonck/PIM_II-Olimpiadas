@@ -1,0 +1,7 @@
+# depslib dependency file v1.0
+1635349763 source:e:\faculdade\pim\pim ii - projeto olimpiadas\pim_ii-olimpiadas\main.c
+	<stdio.h>
+	<stdlib.h>
+	<locale.h>
+	<string.h>
+

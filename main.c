@@ -1,15 +1,19 @@
-// VERSÃƒO 1.1
+// VERSÃO 1.2
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <locale.h>
 #include <string.h>
 
+int cod_AtualUsuario, cod_UltimoUsuario, num_cadastros;
+
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// FUNÇÃO PRINCIPAL                                                                                                                 /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
 int main()
 {
     setlocale(LC_ALL, "Portuguese");
-
     Logo();
     Menu_Login();
     Menu_Principal();
@@ -17,15 +21,16 @@ int main()
     return 0;
 }
 
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// TELA DE INICIALIZAÇÃO                                                                                                            /
+///----------------------------------------------------------------------------------------------------------------------------------/
+
 void Logo()
-{
-    /********************************************************************/
-    /// Imprime uma logo das olimpiadas com as informaï¿½ï¿½es do trabalho ///
-    /********************************************************************/
+{// Função para a impressão de uma imagem com as informações do trabalho
 
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
-            "|             Gerenciador das Olimpï¿½adas de Paris 2024            |\n"
+            "|             Gerenciador das Olimpíadas de Paris 2024            |\n"
             "|                Projeto PIM II - 'Nome do projeto'               |\n"
             "|                    UNIP Paulista - 00/00/2021                   |\n"
             "+-----------------------------------------------------------------+\n"
@@ -48,32 +53,29 @@ void Logo()
             "|          Guilherme Augusto dos Santos Ribeiro - G247850         |\n"
             "|                 Henrique Campos Jonck - G298AB3                 |\n"
             "|            Petra Eduarda de Jesus Furlanis - G27EHB1            |\n"
-            "|                Vinï¿½cius Riqueza Moeller - G27BAH0               |\n"
+            "|                Vinícius Riqueza Moeller - G27BAH0               |\n"
             "+-----------------------------------------------------------------+\n\n");
 
     system("pause");
 }
 
-///---------------------------------------------------------------------------------------------------/
-/// TELA DE LOGIN
-///
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// TELAS DE LOGIN                                                                                                                   /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
 void Menu_Login()
-{
-    /*********************************************************/
-    /// Menu para seleï¿½ï¿½o de Login ou de Cadastro de usuï¿½rio */
-    /*********************************************************/
+{// Função para a impressão e seleção do menu de login.
 
-    /// Declaraï¿½ï¿½o de Variaveis
+    /// DECLARAÇÃO DE VARIAVEIS
     int opcao;
 
-    /// Impressï¿½o do Menu
+    /// IMPRESSÃO DO MENU
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
             "|                              Login                              |\n"
             "+-----------------------------------------------------------------+\n"
             "| 1- Entrar                                                       |\n"
-            "| 2- Novo Usuï¿½rio                                                 |\n"
+            "| 2- Novo Usuário                                                 |\n"
             "| 3- Sair                                                         |\n"
             "+-----------------------------------------------------------------+\n\n");
 
@@ -81,7 +83,7 @@ void Menu_Login()
     setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
-    /// Filtar seleï¿½ï¿½o
+    /// FILTRAR SELEÇÃO
     switch(opcao)
     {
         case 1:
@@ -98,32 +100,16 @@ void Menu_Login()
 }
 
 void Login_Entrar()
-{
-    /***********************************/
-    /// Login de um usuï¿½rio existente ///
-    /***********************************/
+{// Função utilizada na realização de login do usuário.
 
-    /// Declaraï¿½ï¿½o de Variaveis
-    FILE *arquivo;
-    char *resultado, *pedaco;
-    char verificacao, usuario[30], senha[30], dados1[100], dados2[100], matriz[2][50];
-    int i, acesso = 0;
+    /// DECLARAÇÃO DE VARIAVEIS
+    char verificacao, usuario[30], senha[30];
+    int acesso = 0;
 
-    /// Impressï¿½o do Menu
+    /// IMPRESSÃO DO MENU
     Imprime_Login_Entrar();
 
-    /// Abertura do Arquivo de Usuï¿½rios
-    arquivo = fopen("usuarios.txt", "r");
-
-    /// Verifica a Abertura do Arquivo
-    if(arquivo == NULL)
-    {
-        printf(" Erro na abertura do arquivo!\n");
-        system("pause");
-        Menu_Login();
-    }
-
-    /// Entrada dos Dados
+    /// ENTRADA DE DADOS
     printf(" Login: ");
     setbuf(stdin, NULL);
     scanf("%s", usuario);
@@ -132,193 +118,197 @@ void Login_Entrar()
     setbuf(stdin, NULL);
     scanf("%s", senha);
 
-    // Pergunta se os dados estï¿½o corretos
-    printf("\nDados corretos? \n[S,N]--> ");
-    setbuf(stdin, NULL);
-    scanf("%c", &verificacao);
+    /// CHECAGEM DOS DADOS
+    acesso = Buscar_Usuario(3, usuario, senha);
 
-    // Verifica caso os dados estejam corretos
-    if((verificacao == 's')||(verificacao == 'S'))
+    if(acesso == 1)
+        Menu_Principal();
+    else
     {
-        // Percorre cada linha do arquivo
-        while(!feof(arquivo))
-        {
-            // Retorna a linha para a variavel "dados"
-            resultado = fgets(dados1, 100, arquivo);
+        Imprime_Login_Entrar();
 
-            // Copia os valores do primeiro vetor para o segundo vetor
-            for(int a = 0; a < 100; a++)
-            {
-                dados2[a] = dados1[a];
-            }
-
-            // Verifica se foi possivel retornar alguma string da linha
-            i = 0;
-            if(resultado)
-            {
-                // Reparte a varivel "dados" a cada caractere "ï¿½" e envia para o ponteiro "pedaco"
-                pedaco = strtok(dados2, "ï¿½");
-
-                // Percorre por cada repartiï¿½ï¿½o em "pedaco"
-                while(pedaco)
-                {
-                    // Atribui a "matriz" cada valor de "padaco" separadamente
-                    strcpy(matriz[i],pedaco);
-                    pedaco = strtok(NULL, "ï¿½");
-                    i++;
-                }
-            }
-            // Verifica se os dados digitados batem com os do sistema, se sim retorna 1
-            if((!strcmp(matriz[0], usuario))&(!strcmp(matriz[1], senha)))
-                acesso = 1;
-        }
-
-        /// Fechamento do Arquivo de Usuï¿½rios
-        fclose(arquivo);
-
-        /// Verificaï¿½ï¿½o dos Dados
-        if(acesso == 0)
-        {
-            Imprime_Login_Entrar();
-            printf(" Usuï¿½rio ou Senha incorretos!\n\nCadastrar novo usuï¿½rio? \n[S,N]--> ");
-            setbuf(stdin, NULL);
-            scanf("%c", &verificacao);
-
-            if((verificacao == 's')||(verificacao == 'S')) Login_Cadastrar();
-            else Login_Entrar();
-
-        }else
-        {
-            Menu_Principal();
-        }
-    }else
-    {
-        Login_Entrar();
+        if(Msg_Pergunta("Usuário ou Senha Incorretos!\n\nDeseja realizar o cadastro de um novo usuário?") == 1)
+            Login_Cadastrar();
+        else
+            Login_Entrar();
     }
 }
 
 void Login_Cadastrar()
-{
-    /*********************************/
-    /// Cadastro de um novo usuï¿½rio ///
-    /*********************************/
+{// Função utilizada no cadastro de um novo usuário.
 
-    /// Declaraï¿½ï¿½o de Variaveis
-    FILE *arquivo;
-    char usuario[50], senha[30];
+    /// DECLARAÇÃO DE VARIAVEIS
+    char usuario[50], senha1[30], senha2[30];
     char verificacao;
+    int comparacao, tamUsuario, tamSenha;
 
-    /// Impressï¿½o do Menu
+    /// IMPRESSÃO DO MENU
     Imprime_Login_Cadastro();
 
-    /// Abertura do Arquivo de Usuï¿½rios
-    arquivo = fopen("usuarios.txt", "a");
+    /// ENTRADA DE DADOS
+    printf(" Usuário: ");
+    setbuf(stdin, NULL);
+    scanf("%s", usuario);
 
-    /// Verifica a Abertura do Arquivo
+    printf("\n Senha: ");
+    setbuf(stdin, NULL);
+    scanf("%s", senha1);
+
+    printf(" Confirme a Senha: ");
+    setbuf(stdin, NULL);
+    scanf("%s", senha2);
+
+    /// COMPARAÇÃO DOS DADOS
+    comparacao = strcmp(senha1, senha2);
+    tamSenha = strlen(senha1);
+    tamUsuario = strlen(usuario);
+
+    if(comparacao != 0) Verificar_Cadastro("As senhas não correspondem!");
+    else if(tamSenha < 8) Verificar_Cadastro("Senha muito curta!");
+    else if(tamSenha > 29) Verificar_Cadastro("Senha muito longa!");
+    else if(tamUsuario > 49) Verificar_Cadastro("Usuário muito longo!");
+    else
+    {
+        Imprime_Login_Cadastro();
+        Adicionar_Usuario(usuario, senha1);
+        Menu_Login();
+    }
+}
+
+int Buscar_Usuario(int modo, char usuario[50], char senha[30])
+{// Função para buscar o usuario informado no arquivo de texto.
+    // Modo 1 - Retorna se o usuário está ou não cadastrado.
+    // Modo 2 - Retorna se o usuário e senha estão cadastrados e se correspondem.
+    // Modo 3 - Retorna se o usuário e senha estão cadastrados, se correspondem e informa seu código.
+
+    /// DECLARAÇÃO DE VARIAVEIS
+    FILE *arquivo;
+    char verificacao, dados1[50], dados2[50], info[3][50], *resultado, *pedacos;
+    int index, acesso = 0;
+
+    /// ABERTURA DO ARQUIVO
+    arquivo = fopen("usuarios.txt", "a+");
+
+    /// VERIFICAÇÃO DA ABERTURA DO ARQUIVO
     if(arquivo == NULL)
     {
-        printf(" Erro na abertura do arquivo!\n");
+        printf("Não foi possivel encontrar o arquivo de usuários!\n\n");
         system("pause");
         Menu_Login();
     }
 
-    /// Entrada dos Dados
-    printf(" Usuï¿½rio: ");
-    setbuf(stdin, NULL);
-    scanf("%s", usuario);
-
-    printf(" Senha: ");
-    setbuf(stdin, NULL);
-    scanf("%s", senha);
-
-    // Verifica se o usuï¿½rio digitou os dados corretamente
-    Imprime_Login_Cadastro();
-    printf("Dados Corretos? \n"
-           " Login: [%s]    \n"
-           " Senha: [%s]  \n\n", usuario, senha);
-
-    printf("[S,N]--> ");
-    setbuf(stdin, NULL);
-    scanf("%c", &verificacao);
-
-    // Verifica caso os dados estejam corretos
-    if((verificacao == 's')|(verificacao == 'S'))
+    /// PERCORRER CADA LINHA DO ARQUIVO
+    while(!feof(arquivo))
     {
-        Imprime_Login_Cadastro();
+        // Retornar a string da linha atual
+        resultado = fgets(dados1, 100, arquivo);
 
-        /// Escreve no Arquivo TXT e separado por "ï¿½"
-        fprintf(arquivo, "\n%sï¿½%sï¿½", usuario, senha);
-        printf(" Usuï¿½rio cadastrado com sucesso!\n");
-        system("pause");
+        // Copiar o valor de um vetor para o outro
+        strcpy(dados2, dados1);
 
+        /// VERIFICAR SE A LINHA RETORNOU ALGO
+        index = 0;
+        if(resultado)
+        {
+            /// REPARTIR O RESULTADO DA LINHA
+            pedacos = strtok(dados2, "§");
+
+            /// PERCORRER CADA REPARTIÇÃO
+            while(pedacos)
+            {
+                // Atribui o valor da repartição atual para o vetor
+                strcpy(info[index], pedacos);
+                cod_UltimoUsuario = atoi(pedacos);
+                pedacos = strtok(NULL, "§");
+
+                index++;
+            }
+        }else
+            cod_UltimoUsuario = 0;
+
+        /// VERIFICAR E RETORNAR OS DADOS COM BASE NO MODO INFORMADO
+        if(modo == 1){
+            if(!strcmp(usuario, info[0])) acesso = 1;
+        }
+        if(modo == 2){
+            if((!strcmp(info[0], usuario))&(!strcmp(info[1], senha)))
+                acesso = 1;
+        }
+        if(modo == 3){
+            if((!strcmp(usuario, info[0]))&&(!strcmp(senha, info[1]))){
+                acesso = 1;
+                cod_AtualUsuario = atoi(info[2]);
+            }
+        }
+    }
+    /// FECHAMENTO DO ARQUIVO
+    fclose(arquivo);
+
+    /// RETORNA SE ENCONTROU OU NÃO O USUARIO
+    // 0 - Não encontrado
+    // 1 - Encotrado
+    return acesso;
+}
+
+int Adicionar_Usuario(char usuario[50], char senha[30])
+{// Função para adicionar um novo usuário ao arquivo de texto.
+
+    /// DECLARAÇÃO DE VARIAVEIS
+    FILE *arquivo;
+    char verificacao;
+    int acesso;
+
+    /// VERIFICAR SE USUÁRIO JA EXISTE
+    acesso = Buscar_Usuario(1, usuario, senha);
+    if(acesso == 1)
+    {
+        if(Msg_Pergunta("Usuário ja existente!\n\nDeseja realizar o cadastro novamente?") == 1)
+            Login_Cadastrar();
+        else
+            Menu_Login();
     }else
     {
-        Imprime_Login_Cadastro();
+        /// ABERTURA DO ARQUIVO
+        arquivo = fopen("usuarios.txt", "a+");
 
-        printf("Deseja retornar para a tela de login? \n[S,N]--> ");
-        setbuf(stdin, NULL);
-        scanf("%c", &verificacao);
+        /// VERIFICAÇÃO DA ABERTURA DO ARQUIVO
+        if(arquivo == NULL)
+        {
+            printf("Não foi possivel encontrar o arquivo de usuários!\n");
+            system("pause");
+            Menu_Login();
+        }
 
-        if((verificacao == 's')|(verificacao == 'S')) Menu_Login();
-        else Login_Cadastrar();
+        /// ESCREVER NO ARQUIVO TEXTO COM SEPARAÇÃO POR '§'
+        fprintf(arquivo, "\n%s§%s§%d§", usuario, senha, (cod_UltimoUsuario + 1));
+        printf("Usuário cadastrado com sucesso!\n\n");
+        system("pause");
+
+        /// FECHAMENTO DO ARQUIVO
+        fclose(arquivo);
     }
-
-    /// Fechamento do Arquivo de Usuï¿½rios
-    fclose(arquivo);
-    Menu_Login();
+    return 0;
 }
 
-void Imprime_Login_Entrar()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                              Entrar                             |\n"
-            "+-----------------------------------------------------------------+\n");
-}
-
-void Imprime_Login_Cadastro()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                           Novo Usuï¿½rio                          |\n"
-            "+-----------------------------------------------------------------+\n");
-}
-
-void Imprime_Menu_Principal()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                          Menu Principal                         |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Tela de Cadastros                                            |\n"
-            "| 2- Tela de Gerenciamentos                                       |\n"
-            "| 3- Tela de Login                                                |\n"
-            "| 4- Sair                                                         |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-///---------------------------------------------------------------------------------------------------/
-/// TELA DE MENU
-///
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// TELA DE MENU PRINCIPAL                                                                                                           /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
 void Menu_Principal()
-{
-    /*******************************/
-    /// Menu de seleï¿½ï¿½o principal ///
-    /*******************************/
+{// Função para a impressão e seleção do menu principal.
 
-    /// Declaraï¿½ï¿½o de Variaveis
+    /// DECLARAÇÃO DE VARIAVEIS
     int opcao;
     char verificacao;
 
-    /// Impressï¿½o do Menu
+    /// IMPRESSÃO DO MENU
     Imprime_Menu_Principal();
 
     printf("--> ");
     setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
-    /// Filtar Seleï¿½ï¿½o
+    /// FILTRAR SELEÇÃO
     switch(opcao)
     {
         case 1:
@@ -328,21 +318,11 @@ void Menu_Principal()
             Menu_Gerenciamentos();
             break;
         case 3:
-            Imprime_Menu_Principal();
-
-            printf("Deseja deslogar do usuï¿½rio atual?\n[S,N]--> ");
-            setbuf(stdin, NULL);
-            scanf("%c", &verificacao);
-
-            if((verificacao == 's')|(verificacao == 'S')) Menu_Login();
+            if(Msg_Pergunta("\nDeseja deslogar do usuário atual?") == 1) Menu_Login();
             else Menu_Principal();
-
+            break;
         case 4:
-            printf("\nDeseja sair do programa?\n[S,N]--> ");
-            setbuf(stdin, NULL);
-            scanf("%c", &verificacao);
-
-            if((verificacao == 's')|(verificacao == 'S')) exit(0);
+            if(Msg_Pergunta("\nDeseja sair do programa?") == 1) exit(0);
             else Menu_Principal();
             break;
         default:
@@ -350,63 +330,40 @@ void Menu_Principal()
     }
 }
 
-///---------------------------------------------------------------------------------------------------/
-/// AREA DE CADASTROS
-///
-
-void Imprime_Menu_Cadastro()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                        Menu de Cadastros                        |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Atleta                                                       |\n"
-            "| 2- Modalidade OlÃ­mpica                                          |\n"
-            "| 3- Localidade                                                   |\n" //Removi os equipamento e coloquei localidade no lugar(Coloquei os equipamento no cadastro da modalidade)
-            "| 4- Agendamento de Treino                                        |\n" // Mudei o nome de agendamento para agendamento de treino
-            "| 5- Agendamento de Jogo                                          |\n" // Adicionei o agendamento de jogos
-            "| 6- Mï¿½dico                                                       |\n"
-            "| 7- Funcionï¿½rio                                                  |\n"
-            "| 8- Voluntï¿½rio                                                   |\n"
-            "| 9- Voltar                                                       |\n"
-            "|10- Sair                                                         |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// AREA DE CADASTROS                                                                                                                /
+///----------------------------------------------------------------------------------------------------------------------------------/
 
 void Menu_Cadastros()
-{
-    /*********************************************************/
-    /// Menu de seleï¿½ï¿½o para cadastrar uma determinada area ///
-    /*********************************************************/
+{// Função para a impressão e seleção do menu de cadastros.
 
-    /// Declaraï¿½ï¿½o de Variaveis
+    /// DECLARAÇÃO DE VARIAVEIS
     int opcao;
-    char verificacao;
 
-    /// Impressï¿½o do Menu
+    /// IMPRESSÃO DO MENU
     Imprime_Menu_Cadastro();
 
     printf("--> ");
     setbuf(stdin, NULL);
     scanf("%d", &opcao);
 
-    /// Filtrar Seleï¿½ï¿½o
+    /// FILTRAR SELEÇÃO
     switch(opcao)
     {
         case 1:
             Cadastro_Atleta();
             break;
         case 2:
-            Cadastro_Modalidade_Olimpica();
+            Cadastro_Modalidade();
             break;
         case 3:
             Cadastro_Localidade();
             break;
         case 4:
-            Cadastro_Agendamento_Treino();
+            Cadastro_AgendamentoTreino();
             break;
         case 5:
-            Cadastro_Medico();
+            Cadastro_AgendamentoJogo();
             break;
         case 6:
             Cadastro_Medico();
@@ -421,24 +378,23 @@ void Menu_Cadastros()
             Menu_Principal();
             break;
         case 10:
-            printf("\nDeseja sair do programa?\n[S,N]--> ");
-            setbuf(stdin, NULL);
-            scanf("%c", &verificacao);
-
-            if((verificacao == 's')|(verificacao == 'S')) exit(0);
+            if(Msg_Pergunta("\nDeseja sair do programa?") == 1) exit(0);
             else Menu_Cadastros();
-
             break;
         default:
             Menu_Cadastros();
     }
 }
 
-void Cadastro_De_Atleta_Finalizado()
+/************************************************************************************************************************************/
+///  NOVAS FUNÇÕES DA VERSÃO 1.1
+/************************************************************************************************************************************/
+
+void Cadastro_Atleta_Finalizado()
 {
     int escolhaDoUsuario;
 
-    Imprime_Cadastro_de_Atleta_Finalizado();
+    Imprime_Cadastro_Atleta_Finalizado();
 
     printf("--> ");
     scanf("%d", &escolhaDoUsuario);
@@ -452,597 +408,13 @@ void Cadastro_De_Atleta_Finalizado()
         Menu_Cadastros();
         break;
     default:
-        Cadastro_De_Atleta_Finalizado();
+        Cadastro_Atleta_Finalizado();
     }
 }
 
-// Fiz daqui
+///-----------------------------------------------
 
-void Cadastro_Atleta()
-{
-    int
-    quantidadeDeAtletas,
-    idadeDoAtleta,
-    count;
-    char nomeDoAtleta[100], paisDoAtleta[100], sexoDoAtleta[12], passaporteDoAtleta[15], modalidadeQueOAtletaVaiJogar[30];
-
-
-    system("cls");
-    printf("+-----------------------------------------------------------------+\n"
-           "|                         Cadastrar Atleta                        |\n"
-           "+-----------------------------------------------------------------+\n");
-
-    printf(
-           "| Deseja cadastrar quantos atletas:                               |\n"
-           "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeAtletas);
-    setbuf(stdin, NULL);
-
-    for (count = 0; count < quantidadeDeAtletas; count++)
-    {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                     Cadastrando novo Atleta                     |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nNome Completo do AtlÃ©ta: ");
-        setbuf(stdin, NULL);
-        fgets(nomeDoAtleta, 100, stdin);
-
-        printf("\nPaÃ­s de Origem do atleta: ");
-        setbuf(stdin, NULL);
-        fgets(paisDoAtleta, 100, stdin);
-
-        printf("\nSexo do Atleta: Homem / Mulher: ");
-        setbuf(stdin, NULL);
-        fgets(sexoDoAtleta, 12, stdin);
-
-        printf("\nNumero do passaporte do Atleta: ");
-        setbuf(stdin, NULL);
-        fgets(passaporteDoAtleta, 18, stdin);
-
-        printf("\nModalidade OlÃ­mpica que o atleta vai jogar: ");
-        setbuf(stdin, NULL);
-        fgets(modalidadeQueOAtletaVaiJogar, 30, stdin);
-    }
-
-    system("pause");
-    Cadastro_De_Atleta_Finalizado();
-}
-
-void Cadastro_Modalidade_Olimpica_Finalizado()
-{
-    int escolhaDoUsuario;
-    Imprime_Cadastro_Modalidade_Olimpica_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Modalidade_Olimpica();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Modalidade_Olimpica_Finalizado();
-    }
-}
-
-void Cadastro_Modalidade_Olimpica()
-{
-    int count, quantidadeDeModalidade;
-    char nomeDaModalidade[20], equipamentoDaModalidade[200], alojamentoDaModalidade[30];
-
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Modalidade OlÃ­mpica                       |\n"
-            "+-----------------------------------------------------------------+\n");
-    printf(
-           "| Deseja cadastrar quantas Modalidades:                           |\n"
-           "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeModalidade);
-
-    for (count = 0; count < quantidadeDeModalidade; count++) {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                   Cadastrando nova Modalidade                   |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nNome da Modalidade: ");
-        setbuf(stdin, NULL);
-        fgets(nomeDaModalidade, 20, stdin);
-
-        printf("\nEquipamentos que a equipe vai utlizar (Separe os nomes dos equipamentos por vÃ­rgulas): ");
-        setbuf(stdin, NULL);
-        fgets(equipamentoDaModalidade, 200, stdin);
-
-        printf("\nOnde serÃ¡ o alojamento dessa modalidade?: ");
-        setbuf(stdin, NULL);
-        fgets(alojamentoDaModalidade, 30, stdin);
-    }
-    system("pause");
-    Cadastro_Modalidade_Olimpica_Finalizado();
-}
-
-void Cadastro_Localidade_Finalizado()
-{
-    int escolhaDoUsuario;
-    Imprime_Cadastro_Localidade_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Localidade();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Imprime_Cadastro_Localidade_Finalizado();
-    }
-}
-
-void Cadastro_Localidade()
-{
-    int count, quantidadeDeLocal;
-    char estadioQueVaiAcontecerOsJogos[30], cidadeQueVaiAcontecerOsJogos[30];
-
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Localidade                      |\n"
-            "+-----------------------------------------------------------------+\n");
-    printf(
-            "| Deseja cadastrar quantos Local:                                 |\n"
-            "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeLocal);
-
-    for (count = 0; count < quantidadeDeLocal; count++) {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                   Cadastrando novo Local                        |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nNome da Cidade: ");
-        setbuf(stdin, NULL);
-        fgets(cidadeQueVaiAcontecerOsJogos, 30, stdin);
-
-        printf("\nNome do estÃ¡dio: ");
-        setbuf(stdin, NULL);
-        fgets(estadioQueVaiAcontecerOsJogos, 30, stdin);
-    }
-
-    system("pause");
-    Cadastro_Localidade_Finalizado();
-}
-
-void Cadastro_Agendamento_Treino_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Agendamento_Treino_Finalizado();
-
-     printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Agendamento_Treino();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Agendamento_Treino_Finalizado();
-    }
-}
-
-void Cadastro_Agendamento_Treino()
-{
-    int count, quantidadeDeAgendamento;
-    char modalidadeQueVaiTreinar[30], localDoTreino[40];
-
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Treino                          |\n"
-            "+-----------------------------------------------------------------+\n");
-    printf(
-            "| Deseja cadastrar quantos treinos:                               |\n"
-            "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeAgendamento);
-
-    for (count = 0; count < quantidadeDeAgendamento; count++) {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                  Novo Cadastro de Treino                        |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nQual modalidade olÃ­mpica vai treinar: ");
-        setbuf(stdin, NULL);
-        fgets(modalidadeQueVaiTreinar, 30, stdin);
-
-        printf("\nLocal do treino: ");
-        setbuf(stdin, NULL);
-        fgets(localDoTreino, 40, stdin);
-    }
-
-    system("pause");
-    Cadastro_Agendamento_Treino_Finalizado();
-}
-
-void Cadastro_Agendamento_Jogo_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Agendamento_Jogo_Finalizado();
-
-     printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Agendamento_Jogo();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Agendamento_Jogo_Finalizado();
-    }
-}
-
-void Cadastro_Agendamento_Jogo()
-{
-    int count, quantidadeDeAgendamento;
-    char modalidadeQueVaiJogar[40], localDoJogo[40], horarioDoJogo[4];
-
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Jogos                          |\n"
-            "+-----------------------------------------------------------------+\n");
-    printf(
-            "| Deseja cadastrar quantos Jogos:                                 |\n"
-            "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeAgendamento);
-
-    for (count = 0; count < quantidadeDeAgendamento; count++) {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                  Novo Cadastro de Jogo                          |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nQual modalidade olÃ­mpica vai jogar: ");
-        setbuf(stdin, NULL);
-        fgets(modalidadeQueVaiJogar, 30, stdin);
-
-        printf("\nEm qual estÃ¡dio serÃ¡ o jogo: ");
-        setbuf(stdin, NULL);
-        fgets(localDoJogo, 40, stdin);
-
-        printf("\nHorario do Jogo(Formato 24h. Apenas nÃºmero!!!): ");
-        setbuf(stdin, NULL);
-        fgets(horarioDoJogo, 4, stdin);
-    }
-
-    system("pause");
-    Cadastro_Agendamento_Jogo_Finalizado();
-}
-
-void Cadastro_Medico_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Medico_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Medico();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Medico_Finalizado();
-    }
-}
-
-void Cadastro_Medico()
-{
-    int count, quantidadeDeMedicos;
-    char modalidadeDeAtuacao[20];
-    char nomeDoMedico[50];
-
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                         Cadastrar Mï¿½dico                        |\n"
-            "+-----------------------------------------------------------------+\n");
-   printf(
-            "| Deseja cadastrar quantos agendamento de treinos:                |\n"
-            "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeMedicos);
-
-    for (count = 0; count < quantidadeDeMedicos; count++) {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                   Novo Cadastro de MÃ©dico                       |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nNome do mÃ©dico: ");
-        setbuf(stdin, NULL);
-        fgets(nomeDoMedico, 50, stdin);
-
-        printf("\nQual modalidade o mÃ©dico vai atuar: ");
-        setbuf(stdin, NULL);
-        fgets(modalidadeDeAtuacao, 20, stdin);
-    }
-
-    system("pause");
-    Cadastro_Medico_Finalizado();
-}
-
-void Cadastro_Funcionario_Finalizado() {
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Funcionario_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Funcionario();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Funcionario_Finalizado();
-    }
-}
-
-void Cadastro_Funcionario()
-{
-    int count, quantidadeDeFuncionarios, horasATrabalhar;
-    char nomeDoFuncionario[30], trabalhoDesteFuncionario[50], numeroPassaporte[15];
-    float salarioDoFuncionario;
-
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Funcionï¿½rio                     |\n"
-            "+-----------------------------------------------------------------+\n");
-   printf(
-            "| Deseja cadastrar quantos funcionarios:                          |\n"
-            "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeFuncionarios);
-
-    for (count = 0; count < quantidadeDeFuncionarios; count++) {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                   Novo FuncionÃ¡rio                              |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nNome do funcionario: ");
-        setbuf(stdin, NULL);
-        fgets(nomeDoFuncionario, 30, stdin);
-
-        printf("\nQual trabalho ele vai fazer: ");
-        setbuf(stdin, NULL);
-        fgets(trabalhoDesteFuncionario, 50, stdin);
-
-        printf("\nQuantas horas por dia este funcionÃ¡rio vai trabalhar(Apenas nÃºmeros): ");
-        setbuf(stdin, NULL);
-        scanf("%d", &horasATrabalhar);
-
-        printf("\nSalÃ¡rio do funcionÃ¡rio(Ex: 1.600): ");
-        setbuf(stdin, NULL);
-        scanf("%f", &salarioDoFuncionario);
-
-        printf("\nPassaporte do funcionÃ¡rio: ");
-        setbuf(stdin, NULL);
-        scanf("%s", numeroPassaporte);
-    }
-
-    system("pause");
-    Cadastro_Funcionario_Finalizado();
-}
-
-void Cadastro_Voluntario_Finalizado()
-{
-    int escolhaDoUsuario;
-
-    Imprime_Cadastro_Voluntario_Finalizado();
-
-    printf("--> ");
-    scanf("%d", &escolhaDoUsuario);
-
-    switch (escolhaDoUsuario)
-    {
-    case 1:
-        Cadastro_Funcionario();
-        break;
-    case 2:
-        Menu_Cadastros();
-        break;
-    default:
-        Cadastro_Funcionario_Finalizado();
-    }
-}
-
-void Cadastro_Voluntario()
-{
-    int count, quantidadeDeVoluntarios, horasAVoluntariar;
-    char nomeDoVoluntario[30], tarefaDoVoluntario[60], numeroPassaporte[15];
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                       Cadastrar Voluntï¿½rio                     |\n"
-            "+-----------------------------------------------------------------+\n");
-
-            printf(
-            "| Deseja cadastrar quantos voluntarios:                           |\n"
-            "+-----------------------------------------------------------------+\n\n");
-
-    printf("--> ");
-    scanf("%d", &quantidadeDeVoluntarios);
-
-    for (count = 0; count < quantidadeDeVoluntarios; count++) {
-        printf("\n+-----------------------------------------------------------------+\n"
-                 "|                   Novo Voluntario                               |\n"
-                 "+-----------------------------------------------------------------+\n");
-
-        printf("\nNome do funcionario: ");
-        setbuf(stdin, NULL);
-        fgets(nomeDoVoluntario, 30, stdin);
-
-        printf("\nQual trabalho ele vai fazer: ");
-        setbuf(stdin, NULL);
-        fgets(tarefaDoVoluntario, 60, stdin);
-
-        printf("\nQuantas horas por dia este voluntario vai ajudar(Apenas nÃºmeros): ");
-        setbuf(stdin, NULL);
-        scanf("%d", &horasAVoluntariar);
-
-        printf("\nPassaporte do funcionÃ¡rio: ");
-        setbuf(stdin, NULL);
-        fgets(numeroPassaporte, 60, stdin);
-    }
-
-    system("pause");
-    Cadastro_Voluntario_Finalizado();
-}
-
-// ate aqui
-
-///
-/// AREA DE GERENCIAMENTO
-///
-
-void Imprime_Menu_Gerenciamento()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                      Menu de Gerenciamentos                     |\n"
-            "+-----------------------------------------------------------------+\n"
-            "| 1- Calendario Olï¿½mpico                                          |\n"
-            "| 2- Ranqueamento de Medalhas                                     |\n"
-            "| 3- Medalhistas Olï¿½mpicos                                        |\n"
-            "| 4- Contabilizaï¿½ï¿½o de Medalhas Distribuidas                      |\n"
-            "| 5- Voltar                                                       |\n"
-            "| 6- Sair                                                         |\n"
-            "+-----------------------------------------------------------------+\n\n");
-}
-
-void Menu_Gerenciamentos()
-{
-    char verificacao;
-
-    /****************************************************************/
-    /// Menu de seleï¿½ï¿½o para o gerenciamento de uma determida area ///
-    /****************************************************************/
-
-    /// Declaraï¿½ï¿½o de Variaveis
-    int opcao;
-
-    /// Impressï¿½o do Menu
-    Imprime_Menu_Gerenciamento();
-
-    printf("--> ");
-    setbuf(stdin, NULL);
-    scanf("%d", &opcao);
-
-    /// Filtar Seleï¿½ï¿½o
-    switch(opcao)
-    {
-        case 1:
-            Gerencia_Calendario();
-            break;
-        case 2:
-            Gerencia_Ranqueamento();
-            break;
-        case 3:
-            Gerencia_Medalhistas();
-            break;
-        case 4:
-            Gerencia_Contabilizacao();
-            break;
-        case 5:
-            Menu_Principal();
-            break;
-        case 6:
-            printf("\nDeseja sair do programa?\n[S,N]--> ");
-            setbuf(stdin, NULL);
-            scanf("%c", &verificacao);
-
-            if((verificacao == 's')|(verificacao == 'S')) exit(0);
-            else Menu_Gerenciamentos();
-
-            break;
-        default:
-            Menu_Gerenciamentos();
-    }
-}
-
-void Gerencia_Calendario()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                        Calendario Olï¿½mpico                      |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    Menu_Principal();
-}
-void Gerencia_Ranqueamento()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                      Ranqueamento de Medalhas                   |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    Menu_Principal();
-}
-void Gerencia_Medalhistas()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                      Medalhistas Olï¿½mpicos                      |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    Menu_Principal();
-}
-void Gerencia_Contabilizacao()
-{
-    system("cls");
-    printf( "+-----------------------------------------------------------------+\n"
-            "|                    Contabilizaï¿½ï¿½o de Medalhas                   |\n"
-            "+-----------------------------------------------------------------+\n");
-
-    system("pause");
-    Menu_Principal();
-}
-
-
-void Imprime_Cadastro_de_Atleta_Finalizado()
+void Imprime_Cadastro_Atleta_Finalizado()
 {
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
@@ -1056,7 +428,7 @@ void Imprime_Cadastro_de_Atleta_Finalizado()
 void Imprime_Cadastro_Modalidade_Olimpica_Finalizado()
 {
     printf( "+-----------------------------------------------------------------+\n"
-            "|           Cadastro de Modalidade OlÃ­mpica, Finalizado           |\n"
+            "|           Cadastro de Modalidade Olímpica, Finalizado           |\n"
             "+-----------------------------------------------------------------+\n"
             "| 1- Cadastrar mais modalidades                                   |\n"
             "| 2- Voltar para tela de Cadastros                                |\n"
@@ -1098,7 +470,7 @@ void Imprime_Cadastro_Medico_Finalizado()
     printf( "+-----------------------------------------------------------------+\n"
             "|           Cadastro de Medico(s), Finalizado                       |\n"
             "+-----------------------------------------------------------------+\n"
-            "| 1- Cadastrar mais mÃ©dicos                                       |\n"
+            "| 1- Cadastrar mais médicos                                       |\n"
             "| 2- Voltar para tela de Cadastros                                |\n"
             "+-----------------------------------------------------------------+\n\n");
 }
@@ -1121,4 +493,663 @@ void Imprime_Cadastro_Voluntario_Finalizado()
             "| 1- Cadastrar mais voluntario(s)                                 |\n"
             "| 2- Voltar para tela de Cadastros                                |\n"
             "+-----------------------------------------------------------------+\n\n");
+}
+
+/// -----------------------------------------------
+
+void Cadastro_Modalidade_Olimpica_Finalizado()
+{
+    int escolhaDoUsuario;
+    Imprime_Cadastro_Modalidade_Olimpica_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Modalidade();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Modalidade_Olimpica_Finalizado();
+    }
+}
+
+/// -----------------------------------------------
+
+void Cadastro_Localidade_Finalizado()
+{
+    int escolhaDoUsuario;
+    Imprime_Cadastro_Localidade_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Localidade();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Imprime_Cadastro_Localidade_Finalizado();
+    }
+}
+
+/// -----------------------------------------------
+
+void Cadastro_Agendamento_Treino_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Agendamento_Treino_Finalizado();
+
+     printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_AgendamentoTreino();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Agendamento_Treino_Finalizado();
+    }
+}
+
+/// -----------------------------------------------
+
+void Cadastro_Agendamento_Jogo_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Agendamento_Jogo_Finalizado();
+
+     printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_AgendamentoJogo();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Agendamento_Jogo_Finalizado();
+    }
+}
+
+/// -----------------------------------------------
+
+void Cadastro_Medico_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Medico_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Medico();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Medico_Finalizado();
+    }
+}
+
+/// -----------------------------------------------
+
+void Cadastro_Funcionario_Finalizado() {
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Funcionario_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Funcionario();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Funcionario_Finalizado();
+    }
+}
+
+/// -----------------------------------------------
+
+void Cadastro_Voluntario_Finalizado()
+{
+    int escolhaDoUsuario;
+
+    Imprime_Cadastro_Voluntario_Finalizado();
+
+    printf("--> ");
+    scanf("%d", &escolhaDoUsuario);
+
+    switch (escolhaDoUsuario)
+    {
+    case 1:
+        Cadastro_Funcionario();
+        break;
+    case 2:
+        Menu_Cadastros();
+        break;
+    default:
+        Cadastro_Funcionario_Finalizado();
+    }
+}
+
+/************************************************************************************************************************************/
+/************************************************************************************************************************************/
+
+
+
+void Cadastro_Atleta()
+{
+    int quantidadeDeAtletas, idadeDoAtleta, count;
+    char nomeDoAtleta[100], paisDoAtleta[100], sexoDoAtleta[12], passaporteDoAtleta[15], modalidadeQueOAtletaVaiJogar[30];
+
+    system("cls");
+    printf("+-----------------------------------------------------------------+\n"
+           "|                         Cadastrar Atleta                        |\n"
+           "+-----------------------------------------------------------------+\n"
+           "| Deseja cadastrar quantos atletas?                               |\n"
+           "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeAtletas);
+    setbuf(stdin, NULL);
+
+    for (count = 0; count < quantidadeDeAtletas; count++)
+    {
+        system("cls");
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                     Cadastrando novo Atleta                     |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nNome Completo do Atleta: ");
+        setbuf(stdin, NULL);
+        fgets(nomeDoAtleta, 100, stdin);
+
+        printf("\nPaís de Origem: ");
+        setbuf(stdin, NULL);
+        fgets(paisDoAtleta, 100, stdin);
+
+        printf("\nSexo [M/F]: ");
+        setbuf(stdin, NULL);
+        fgets(sexoDoAtleta, 12, stdin);
+
+        printf("\nNúmero do passaporte: ");
+        setbuf(stdin, NULL);
+        fgets(passaporteDoAtleta, 18, stdin);
+
+        printf("\nModalidade Olímpica do atleta: ");
+        setbuf(stdin, NULL);
+        fgets(modalidadeQueOAtletaVaiJogar, 30, stdin);
+    }
+
+    system("pause");
+    Cadastro_Atleta_Finalizado();
+}
+
+void Cadastro_Modalidade()
+{
+    int count, quantidadeDeModalidade;
+    char nomeDaModalidade[20], equipamentoDaModalidade[200], alojamentoDaModalidade[30];
+
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Modalidade Olímpica                       |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| Deseja cadastrar quantas Modalidades?                           |\n"
+            "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeModalidade);
+
+    for (count = 0; count < quantidadeDeModalidade; count++) {
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                   Cadastrando nova Modalidade                   |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nNome da Modalidade: ");
+        setbuf(stdin, NULL);
+        fgets(nomeDaModalidade, 20, stdin);
+
+        printf("\nEquipamentos que a equipe vai utlizar (Separe os nomes dos equipamentos por vírgulas): ");
+        setbuf(stdin, NULL);
+        fgets(equipamentoDaModalidade, 200, stdin);
+
+        printf("\nOnde será o alojamento dessa modalidade?: ");
+        setbuf(stdin, NULL);
+        fgets(alojamentoDaModalidade, 30, stdin);
+    }
+    system("pause");
+    Cadastro_Modalidade_Olimpica_Finalizado();
+}
+
+
+void Cadastro_Localidade()
+{
+    int count, quantidadeDeLocal;
+    char estadioQueVaiAcontecerOsJogos[30], cidadeQueVaiAcontecerOsJogos[30];
+
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Cadastrar Localidade                      |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| Deseja cadastrar quantos Locais?                                |\n"
+            "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeLocal);
+
+    for (count = 0; count < quantidadeDeLocal; count++) {
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                      Cadastrando novo Local                     |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nNome da Cidade: ");
+        setbuf(stdin, NULL);
+        fgets(cidadeQueVaiAcontecerOsJogos, 30, stdin);
+
+        printf("\nNome do estádio: ");
+        setbuf(stdin, NULL);
+        fgets(estadioQueVaiAcontecerOsJogos, 30, stdin);
+    }
+
+    system("pause");
+    Cadastro_Localidade_Finalizado();
+}
+
+void Cadastro_AgendamentoTreino()
+{
+    int count, quantidadeDeAgendamento;
+    char modalidadeQueVaiTreinar[30], localDoTreino[40];
+
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                         Cadastrar Treino                        |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| Deseja agendar quantos treinos?                                 |\n"
+            "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeAgendamento);
+
+    for (count = 0; count < quantidadeDeAgendamento; count++) {
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                     Novo Cadastro de Treino                     |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nQual modalidade olímpica vai treinar: ");
+        setbuf(stdin, NULL);
+        fgets(modalidadeQueVaiTreinar, 30, stdin);
+
+        printf("\nLocal do treino: ");
+        setbuf(stdin, NULL);
+        fgets(localDoTreino, 40, stdin);
+    }
+
+    system("pause");
+    Cadastro_Agendamento_Treino_Finalizado();
+}
+
+void Cadastro_AgendamentoJogo()
+{
+    int count, quantidadeDeAgendamento;
+    char modalidadeQueVaiJogar[40], localDoJogo[40], horarioDoJogo[4];
+
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                          Cadastrar Jogo                         |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| Deseja agendar quantos Jogos?                                   |\n"
+            "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeAgendamento);
+
+    for (count = 0; count < quantidadeDeAgendamento; count++) {
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                  Novo Cadastro de Jogo                          |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nQual modalidade olímpica vai jogar: ");
+        setbuf(stdin, NULL);
+        fgets(modalidadeQueVaiJogar, 30, stdin);
+
+        printf("\nEm qual estádio será o jogo: ");
+        setbuf(stdin, NULL);
+        fgets(localDoJogo, 40, stdin);
+
+        printf("\nHorario do Jogo(Formato 24h. Apenas número!!!): ");
+        setbuf(stdin, NULL);
+        fgets(horarioDoJogo, 4, stdin);
+    }
+
+    system("pause");
+    Cadastro_Agendamento_Jogo_Finalizado();
+}
+
+void Cadastro_Medico()
+{
+    int count, quantidadeDeMedicos;
+    char modalidadeDeAtuacao[20];
+    char nomeDoMedico[50];
+
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                         Cadastrar Médico                        |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| Deseja cadastrar quantos médicos?                               |\n"
+            "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeMedicos);
+
+    for (count = 0; count < quantidadeDeMedicos; count++) {
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                     Novo Cadastro de Médico                     |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nNome do médico: ");
+        setbuf(stdin, NULL);
+        fgets(nomeDoMedico, 50, stdin);
+
+        printf("\nQual modalidade o médico vai atuar: ");
+        setbuf(stdin, NULL);
+        fgets(modalidadeDeAtuacao, 20, stdin);
+    }
+
+    system("pause");
+    Cadastro_Medico_Finalizado();
+}
+
+void Cadastro_Funcionario()
+{
+    int count, quantidadeDeFuncionarios, horasATrabalhar;
+    char nomeDoFuncionario[30], trabalhoDesteFuncionario[50], numeroPassaporte[15];
+    float salarioDoFuncionario;
+
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                      Cadastrar Funcionário                      |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| Deseja cadastrar quantos funcionários?                          |\n"
+            "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeFuncionarios);
+
+    for (count = 0; count < quantidadeDeFuncionarios; count++) {
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                         Novo Funcionário                        |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nNome do funcionario: ");
+        setbuf(stdin, NULL);
+        fgets(nomeDoFuncionario, 30, stdin);
+
+        printf("\nQual trabalho ele irá fazer: ");
+        setbuf(stdin, NULL);
+        fgets(trabalhoDesteFuncionario, 50, stdin);
+
+        printf("\nQuantas horas por dia este funcionário irá trabalhar(Apenas números): ");
+        setbuf(stdin, NULL);
+        scanf("%d", &horasATrabalhar);
+
+        printf("\nSalário do funcionário(Ex: 1.600): ");
+        setbuf(stdin, NULL);
+        scanf("%f", &salarioDoFuncionario);
+
+        printf("\nPassaporte do funcionário: ");
+        setbuf(stdin, NULL);
+        scanf("%s", numeroPassaporte);
+    }
+
+    system("pause");
+    Cadastro_Funcionario_Finalizado();
+}
+
+void Cadastro_Voluntario()
+{
+    int count, quantidadeDeVoluntarios, horasAVoluntariar;
+    char nomeDoVoluntario[30], tarefaDoVoluntario[60], numeroPassaporte[15];
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                       Cadastrar Voluntário                      |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| Deseja cadastrar quantos voluntarios?                           |\n"
+            "+-----------------------------------------------------------------+\n\n");
+
+    printf("--> ");
+    scanf("%d", &quantidadeDeVoluntarios);
+
+    for (count = 0; count < quantidadeDeVoluntarios; count++) {
+        printf("\n+-----------------------------------------------------------------+\n"
+                 "|                         Novo Voluntario                         |\n"
+                 "+-----------------------------------------------------------------+\n");
+
+        printf("\nNome do funcionario: ");
+        setbuf(stdin, NULL);
+        fgets(nomeDoVoluntario, 30, stdin);
+
+        printf("\nQual trabalho ele vai fazer: ");
+        setbuf(stdin, NULL);
+        fgets(tarefaDoVoluntario, 60, stdin);
+
+        printf("\nQuantas horas por dia este voluntario vai ajudar(Apenas números): ");
+        setbuf(stdin, NULL);
+        scanf("%d", &horasAVoluntariar);
+
+        printf("\nPassaporte do funcionário: ");
+        setbuf(stdin, NULL);
+        fgets(numeroPassaporte, 60, stdin);
+    }
+
+    system("pause");
+    Cadastro_Voluntario_Finalizado();
+}
+
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// AREA DE GERENCIAMENTO                                                                                                            /
+///----------------------------------------------------------------------------------------------------------------------------------/
+
+void Menu_Gerenciamentos()
+{// Função para a impressão e seleção do menu de gerenciamentos.
+
+    /// DECLARAÇÃO DE VARIAVEIS
+    int opcao;
+
+    /// IMPRESSÃO DO MENU
+    Imprime_Menu_Gerenciamento();
+
+    printf("--> ");
+    setbuf(stdin, NULL);
+    scanf("%d", &opcao);
+
+    /// FILTRAR SELESSÃO
+    switch(opcao)
+    {
+        case 1:
+            Gerencia_Calendario();
+            break;
+        case 2:
+            Gerencia_Ranqueamento();
+            break;
+        case 3:
+            Gerencia_Medalhistas();
+            break;
+        case 4:
+            Gerencia_Contabilizacao();
+            break;
+        case 5:
+            Menu_Principal();
+            break;
+        case 6:
+            if(Msg_Pergunta("\nDeseja sair do programa?") == 1) exit(0);
+            else Menu_Gerenciamentos();
+            break;
+        default:
+            Menu_Gerenciamentos();
+    }
+}
+
+void Gerencia_Calendario()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                        Calendario Olímpico                      |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Gerencia_Ranqueamento()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                      Ranqueamento de Medalhas                   |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Gerencia_Medalhistas()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                      Medalhistas Olímpicos                      |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+void Gerencia_Contabilizacao()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                    Contabilização de Medalhas                   |\n"
+            "+-----------------------------------------------------------------+\n");
+
+    system("pause");
+    Menu_Principal();
+}
+
+///----------------------------------------------------------------------------------------------------------------------------------/
+/// FUNÇÕES GENERICAS                                                                                                                /
+///----------------------------------------------------------------------------------------------------------------------------------/
+
+int Msg_Pergunta(char txt[200])
+{
+    /// DECLARAÇÃO DE VARIAVEIS
+    char pergunta;
+
+    /// IMPRESSÃO DA MENSAGEM
+    printf("%s\n[S,N]--> ", txt);
+    setbuf(stdin, NULL);
+    scanf("%c", &pergunta);
+
+    /// RETORNO DA RESPOSTA
+    if((pergunta == 's')|(pergunta == 'S')) return 1;
+    else return 0;
+}
+
+void Verificar_Cadastro(char txt[100])
+{
+    /// DECLARAÇÃO DE VARIAVEIS
+    char verificacao;
+
+    /// IMPRESSÃO DA MENSAGEM
+    Imprime_Login_Cadastro();
+
+    if(Msg_Pergunta(("%s\n\nDeseja cadastrar novamente?", txt)) == 1)
+        Login_Cadastrar();
+    else
+        Menu_Login();
+}
+
+void Imprime_Menu_Principal()
+{
+    system("cls");
+    printf( "+--------------+--------------------------------------------------+\n"
+            "| Usuário: %.3d |           Menu Principal                         |\n"
+            "+--------------+--------------------------------------------------+\n"
+            "| 1- Tela de Cadastros                                            |\n"
+            "| 2- Tela de Gerenciamentos                                       |\n"
+            "| 3- Tela de Login                                                |\n"
+            "| 4- Sair                                                         |\n"
+            "+-----------------------------------------------------------------+\n\n", cod_AtualUsuario);
+}
+
+void Imprime_Menu_Cadastro()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                        Menu de Cadastros                        |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Atleta                                                       |\n"
+            "| 2- Modalidade Olímpica                                          |\n"
+            "| 3- Localidade                                                   |\n"
+            "| 4- Agendar Treino                                               |\n"
+            "| 5- Agendar Jogo                                                 |\n"
+            "| 6- Médico                                                       |\n"
+            "| 7- Funcionário                                                  |\n"
+            "| 8- Voluntário                                                   |\n"
+            "| 9- Voltar                                                       |\n"
+            "|10- Sair                                                         |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Menu_Gerenciamento()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                      Menu de Gerenciamentos                     |\n"
+            "+-----------------------------------------------------------------+\n"
+            "| 1- Calendario Olímpico                                          |\n"
+            "| 2- Ranqueamento de Medalhas                                     |\n"
+            "| 3- Medalhistas Olímpicos                                        |\n"
+            "| 4- Contabilização de Medalhas Distribuidas                      |\n"
+            "| 5- Voltar                                                       |\n"
+            "| 6- Sair                                                         |\n"
+            "+-----------------------------------------------------------------+\n\n");
+}
+
+void Imprime_Login_Entrar()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                              Entrar                             |\n"
+            "+-----------------------------------------------------------------+\n");
+}
+
+void Imprime_Login_Cadastro()
+{
+    system("cls");
+    printf( "+-----------------------------------------------------------------+\n"
+            "|                           Novo Usuário                          |\n"
+            "+-----------------------------------------------------------------+\n");
 }
