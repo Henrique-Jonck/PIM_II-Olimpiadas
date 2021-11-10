@@ -6,6 +6,7 @@
 #include <string.h>
 
 int cod_AtualUsuario, cod_UltimoUsuario, num_cadastros;
+char informacoes[10][100];
 
 ///----------------------------------------------------------------------------------------------------------------------------------/
 /// FUNÇÃO PRINCIPAL                                                                                                                 /
@@ -655,8 +656,11 @@ void Cadastro_Funcionario()
 
 void Cadastro_Voluntario()
 {
+    /// DECLARAÇÃO DE VARIAVEIS
     int count, quantidadeDeVoluntarios, horasAVoluntariar;
-    char nomeDoVoluntario[30], tarefaDoVoluntario[60], numeroPassaporte[15];
+    char nomeDoVoluntario[30], tarefaDoVoluntario[60], numeroPassaporte[15], textoFinal[200];
+
+    /// IMPRESSÃO DO MENU
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
             "|                       Cadastrar Voluntário                      |\n"
@@ -667,7 +671,9 @@ void Cadastro_Voluntario()
     printf("--> ");
     scanf("%d", &quantidadeDeVoluntarios);
 
+    /// INSERSÃO DE CADA ENTRADA
     for (count = 0; count < quantidadeDeVoluntarios; count++) {
+        system("cls");
         printf("\n+-----------------------------------------------------------------+\n"
                  "|                         Novo Voluntario                         |\n"
                  "+-----------------------------------------------------------------+\n");
@@ -687,6 +693,14 @@ void Cadastro_Voluntario()
         printf("\nPassaporte do funcionário: ");
         setbuf(stdin, NULL);
         fgets(numeroPassaporte, 60, stdin);
+
+        //Substituir quebra de linha pelo final da string
+        Substituir_QuebraLinha(&nomeDoVoluntario, 30);
+        Substituir_QuebraLinha(&tarefaDoVoluntario, 60);
+        Substituir_QuebraLinha(&numeroPassaporte, 15);
+
+        sprintf(textoFinal, "\n%s§%s§%d§%s§", nomeDoVoluntario, tarefaDoVoluntario, horasAVoluntariar, numeroPassaporte);
+        Arquivo_Escrever("Voluntarios.txt", textoFinal);
     }
 
     system("pause");
@@ -759,21 +773,40 @@ void Gerencia_Ranqueamento()
 }
 void Gerencia_Medalhistas()
 {
+
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
             "|                      Medalhistas Olímpicos                      |\n"
             "+-----------------------------------------------------------------+\n");
+
+
 
     system("pause");
     Menu_Principal();
 }
 void Gerencia_Contabilizacao()
 {
+    /// IMPRESSÃO DO MENU
     system("cls");
     printf( "+-----------------------------------------------------------------+\n"
             "|                    Contabilização de Medalhas                   |\n"
-            "+-----------------------------------------------------------------+\n");
+            "+-----------------------------------------------------------------+\n\n\n");
 
+
+    /// IMPRESSÃO DA TABELA
+    printf( "+-----------------+-----------------+-----------------+-----------------+\n"
+            "| Nome            | Função          | Horas           | Passaporte      |\n"
+            "+-----------------+-----------------+-----------------+-----------------+\n");
+    for(int i = 1; i < 4; i++)
+    {
+        Arquivo_Ler("Voluntarios.txt", i);
+
+        printf("|%17s|%17s|%17s|%17s|\n", informacoes[0], informacoes[1], informacoes[2], informacoes[3]);
+    }
+    printf( "+-----------------+-----------------+-----------------+-----------------+\n");
+
+
+    /// SAIDA DO MENU
     system("pause");
     Menu_Principal();
 }
@@ -797,6 +830,11 @@ int Msg_Pergunta(char txt[200])
     else return 0;
 }
 
+void Substituir_QuebraLinha(char *variavel, int tamanho)
+{
+    for(int i = 0; i < tamanho; i++) if(variavel[i] == 10) variavel[i] = '\0';
+}
+
 void Verificar_Cadastro(char txt[100])
 {
     /// DECLARAÇÃO DE VARIAVEIS
@@ -809,6 +847,65 @@ void Verificar_Cadastro(char txt[100])
         Login_Cadastrar();
     else
         Menu_Login();
+}
+
+int Arquivo_Escrever(char nomeArquivo[30], char texto[300])
+{
+    /// DECLARAÇÃO DE VARIAVEIS
+    FILE *arquivo;
+
+    /// ABRIR E VERIFICAR ARQUIVO
+    arquivo = fopen(nomeArquivo, "a");
+    if(arquivo == NULL) return 1;
+
+    /// ESCREVER NO ARQUIVO
+    fprintf(arquivo, texto);
+
+    /// FECHAR O ARQUIVO
+    fclose(arquivo);
+    return 0;
+}
+
+int Arquivo_Ler(char nomeArquivo[30], int linha)
+{
+    /// DECLARAÇÃO DE VARIAVEIS
+    FILE *arquivo;
+    char texto[100], *pedaco;
+    int contador = 0, index;
+
+    /// ABRIR E VERIFICAR ARQUIVO
+    arquivo = fopen(nomeArquivo, "r");
+    if(arquivo == NULL) return 1;
+
+    /// PERCORRER CADA LINHA DO ARQUIVO
+    while (fgets(texto, 100, arquivo) > 0)
+    {
+        // Verifica se o contador esta na linha requisitada
+        if(linha == contador)
+        {
+            // Divide a linha entre os delimitadores
+            pedaco = strtok(texto, "§");
+
+            // Percorre cada divisão da linha
+            index = 0;
+            while(pedaco != NULL)
+            {
+                // Copia a informação dividida para a matriz
+                strcpy(informacoes[index], pedaco);
+                pedaco = strtok(NULL, "§");
+                index++;
+            }
+
+            /// FECHA O ARQUIVO INDICANDO "ENCONTRADO"
+            fclose(arquivo);
+            return 0;
+        }
+        contador++;
+    }
+
+    /// FECHA O ARQUIVO INDICANDO "NÃO ENCONTRADO"
+    fclose(arquivo);
+    return 2;
 }
 
 /// CADASTRO FINALIZADO -------------------------------------------------------------------------------------------------------------|
